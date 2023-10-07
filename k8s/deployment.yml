@@ -1,0 +1,53 @@
+---
+## Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-app
+spec:
+  selector:
+    matchLabels:
+      app: order-service-app
+  template:
+    metadata:
+      labels:
+        app: order-service-app
+    spec:
+      containers:
+      - name: order-service-app
+        image: valorjj/order-service:0.0.1
+        imagePullPolicy: Always
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m" 
+        ports:
+        - containerPort: 8083
+        env:
+          - name: CONFIG_SERVER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: config-cm
+                key: config_url
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-cm
+                key: hostname
+                
+---
+## Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  # cloud-gateway .yml 파일에 해당 값을 지정
+  # Eureka 의존성을 걷어내고, 쿠버네티스에서 제공하는 내부 통신을 위함
+  name: order-service-svc
+spec:
+  selector:
+    app: order-service-app
+  ports:
+  - port: 80
+    targetPort: 8083

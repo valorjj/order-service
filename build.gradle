@@ -1,0 +1,102 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.4'
+	id 'io.spring.dependency-management' version '1.1.3'
+	id "com.google.osdetector" version "1.7.3"
+	id 'com.google.cloud.tools.jib' version '3.4.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2022.0.4")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
+	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave:1.0.3'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave:2.16.3'
+	implementation 'org.springframework.cloud:spring-cloud-starter:4.0.1'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config:4.0.1'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1'
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer:4.0.3'
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.0.0'
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4'
+	runtimeOnly 'com.h2database:h2:2.1.214'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:3.0.4'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
+	testImplementation 'org.springframework.security:spring-security-test:6.0.2'
+	// https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
+	testImplementation 'com.github.tomakehurst:wiremock-jre8:3.0.1'
+
+	// netty 관련 오류 해결, 애플 실리콘 맥북에서만 발생하는 걸로 추정
+	if (osdetector.arch == "aarch_64") {
+		implementation("io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64")
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+jar {
+	enabled = false
+}
+
+jib {
+	// 베이스 이미지 설정
+	from {
+		image = "amazoncorretto:17"
+		// https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#how-do-i-specify-a-platform-in-the-manifest-list-or-oci-index-of-a-base-image
+		platforms {
+			platform {
+				architecture = "arm64"
+				os = "linux"
+			}
+		}
+	}
+	// 빌드하고자 하는 이미지 설정
+	to {
+		image = 'valorjj/order-service'
+		tags = ['0.0.1', 'latest']
+		auth {
+			username = 'valorjj'
+			password = 'dckr_pat_1COmBXt4gcOg0a2fL7OjhgOh9Pk'
+		}
+	}
+	container {
+		entrypoint = ['java', '-jar', '/orderservice.jar']
+		ports = ['8083']
+		environment = [EUREKA_SERVER_ADDRESS: 'http://host.docker.internal:8761/eureka']
+	}
+}
+

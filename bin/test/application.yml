@@ -1,0 +1,31 @@
+spring:
+  config:
+    # config 서버가 존재하지 않는 경우, 에러를 발생시키지 않게 하기 위함
+    import: optional:configserver:http://localhost:9296
+  datasource:
+    url: jdbc:h2:mem:order_db
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-39197128.okta.com/oauth2/default
+      client:
+        registration:
+          internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oab7qloec9P34T1F5d7
+            client-secret: rsMpAEj6KGeb90DIQy_kxDl-qUI7HTQM24qmYAC6dtCfd7NmPn4eIpMPrZZJ6TFt
+        provider:
+          okta:
+            issuer-uri: https://dev-39197128.okta.com/oauth2/default
+
+microservices:
+  product: http://product-service-svc/product/
+  payment: http://payment-service-svc/payment/
