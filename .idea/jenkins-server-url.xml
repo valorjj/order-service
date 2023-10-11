@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JenkinsServer.URL">
+    <option name="a" value="http://34.64.81.204:8080/" />
+    <option name="b">
+      <set>
+        <option value="SUCCESS" />
+        <option value="FAILURE" />
+      </set>
+    </option>
+  </component>
+</project>

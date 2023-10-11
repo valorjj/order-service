@@ -11,6 +11,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '17'
+	targetCompatibility = '17'
 }
 
 configurations {
@@ -73,30 +74,12 @@ jar {
 }
 
 jib {
-	// 베이스 이미지 설정
 	from {
-		image = "amazoncorretto:17"
-		// https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#how-do-i-specify-a-platform-in-the-manifest-list-or-oci-index-of-a-base-image
-		platforms {
-			platform {
-				architecture = "arm64"
-				os = "linux"
-			}
-		}
+		image = 'eclipse-temurin:17-jdk'
 	}
-	// 빌드하고자 하는 이미지 설정
 	to {
-		image = 'valorjj/order-service'
+		image = System.getProperty('REPO_URL') + '/order-service'
 		tags = ['0.0.1', 'latest']
-		auth {
-			username = 'valorjj'
-			password = 'dckr_pat_1COmBXt4gcOg0a2fL7OjhgOh9Pk'
-		}
-	}
-	container {
-		entrypoint = ['java', '-jar', '/orderservice.jar']
-		ports = ['8083']
-		environment = [EUREKA_SERVER_ADDRESS: 'http://host.docker.internal:8761/eureka']
 	}
 }
 
