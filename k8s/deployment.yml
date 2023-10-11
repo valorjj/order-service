@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: order-service-app
-        image: valorjj/order-service:0.0.1
+        image: IMAGE_URL/order-service
         imagePullPolicy: Always
         # resources:
         #   limits:
