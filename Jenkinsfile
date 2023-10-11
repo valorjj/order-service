@@ -28,7 +28,7 @@ node {
     stage('Deploy') {
         // 쿠버네티스 배포 파일에 변수 할당
         sh("sed -i 's|IMAGE_URL|${repoURL}|g' k8s/deployment.yml")
-
+        // 쿠버네티스 클러스터에 배포
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
