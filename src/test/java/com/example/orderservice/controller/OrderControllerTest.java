@@ -61,14 +61,12 @@ class OrderControllerTest {
 
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension.newInstance()
-        .options(WireMockConfiguration.wireMockConfig().port(8080))
+        .options(WireMockConfiguration.wireMockConfig().port(8081))
         .build();
 
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules()
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-
 
     @BeforeEach
     void setUp() throws IOException {

@@ -26,6 +26,7 @@ spring:
           okta:
             issuer-uri: https://dev-39197128.okta.com/oauth2/default
 
+# TestServiceInstanceListSupplier 에 정의한 것과 동일하게 작성
 microservices:
-  product: http://product-service-svc/product/
-  payment: http://payment-service-svc/payment/
+  product: http://localhost:8081/product/
+  payment: http://localhost:8081/payment/

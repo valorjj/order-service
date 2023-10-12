@@ -12,6 +12,21 @@ node {
         ])
     }
 
+    stage('Build') {
+        sh("./gradlew clean build")
+    }
+
+    stage('SonarQube Analysis') {
+        withSonarQubeEnv('Sonar') {
+            sh("./gradlew sonar")
+        }
+    }
+
+    stage('Quality Gate') {
+        waitForQualityGate abortPipelie: true
+    }
+
+
     stage('Build and Push Image to Google Cloud') {
         // jenkins 에 등록한 gcp 인증 정보
         withCredentials([file(credentialsId: 'gcp', variable: 'GC_KEY')]) {
