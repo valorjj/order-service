@@ -31,10 +31,15 @@ ext {
 	set('springCloudVersion', "2022.0.4")
 }
 
+
+tasks.named('sonarqube') {
+	dependsOn('test')
+}
+
 sonarqube {
 	properties {
 		// 1.
-		property("sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/target/jacoco.exec")
+		property("sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/../target/jacoco.exec")
 		// 2. 검사 시 제외할 파일을 지정한다. (공식문서에서 정보가 부족해 빈칸으로 남겨둠)
 		// property("sonar.exclusions", "")
 	}
