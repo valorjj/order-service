@@ -62,8 +62,6 @@ test {
 				"com/example/**/entity/**"
 		]
 	}
-	
-	finalizedBy('sonarqube')
 }
 
 jacocoTestReport {
