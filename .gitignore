@@ -171,3 +171,8 @@ gradle-app.setting
 
 ### Groovy Library ###
 /lib/
+
+
+###
+
+.DS_Store

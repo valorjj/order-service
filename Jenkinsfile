@@ -3,7 +3,7 @@ node {
     // 결과: asia-northeast3-docker.pkg.dev/alpine-guild-401310/spring-microservices
     def repoURL = "${REGISTRY_URL}/${PROJECT_ID}/${ARTIFACT_REGISTRY}"
 
-    stage('Checkout') {
+    stage('Github checkout') {
         checkout([$class: 'GitSCM',
             branches: [[name: '*/main']],
             extensions: [],
@@ -12,11 +12,11 @@ node {
         ])
     }
 
-    stage('Build') {
+    stage('Build project before SonarQube analysis') {
         sh("./gradlew clean build")
     }
 
-    stage('SonarQube Analysis') {
+    stage('SonarQube analysis') {
         withSonarQubeEnv('Sonar') {
             sh("./gradlew sonar")
         }
@@ -27,7 +27,7 @@ node {
     }
 
 
-    stage('Build and Push Image to Google Cloud') {
+    stage('Build and push image to google cloud registry') {
         // jenkins 에 등록한 gcp 인증 정보
         withCredentials([file(credentialsId: 'gcp', variable: 'GC_KEY')]) {
             // 젠킨스에 업로드한 서비스 계정의 자격증명을 통해 Artifact Registry 를 인증한다.
@@ -40,7 +40,7 @@ node {
         }
     }
 
-    stage('Deploy') {
+    stage('Deploy to google cloud kubernetes cluster') {
         // 쿠버네티스 배포 파일에 변수 할당
         sh("sed -i 's|IMAGE_URL|${repoURL}|g' k8s/deployment.yml")
         // 쿠버네티스 클러스터에 배포
