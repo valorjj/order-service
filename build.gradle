@@ -32,14 +32,11 @@ ext {
 }
 
 
-tasks.named('sonarqube') {
-	dependsOn('test')
-}
-
 sonarqube {
+	// properties 값을 입력하지 않으면 default 로 들어가는 값들이 많음
 	properties {
-		// 1.
-		property("sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/../target/jacoco.exec")
+		// 1. jacoco 설정에서 destinationFile 값이 defaul 로 들어간다는 공식문서에 따라 주석처리
+		// property("sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/jacoco/jacoco.exec")
 		// 2. 검사 시 제외할 파일을 지정한다. (공식문서에서 정보가 부족해 빈칸으로 남겨둠)
 		// property("sonar.exclusions", "")
 	}
@@ -56,15 +53,17 @@ test {
 	// 2.
 	jacoco {
 		// 2-1.
-		destinationFile = layout.buildDirectory.file('/target/jacoco.exec').get().getAsFile()
+		destinationFile = layout.buildDirectory.file('jacoco/jacoco.exec').get().getAsFile()
 		// 2-2.
 		classDumpDir = layout.buildDirectory.dir('jacoco/classpathdumps').get().getAsFile()
 		// 2-3.
-		excludes += [
+		excludes = [
 				"com/example/**/exception/**",
 				"com/example/**/entity/**"
 		]
 	}
+	
+	finalizedBy('sonarqube')
 }
 
 jacocoTestReport {
