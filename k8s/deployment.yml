@@ -18,10 +18,10 @@ spec:
       - name: order-service-app
         image: IMAGE_URL/order-service
         imagePullPolicy: Always
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m" 
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 8083
         env:
