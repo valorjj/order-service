@@ -21,9 +21,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        request
-            .getHeaders()
-            .add("Authorization",
+        request.getHeaders().add("Authorization",
                 "Bearer " +
                     Objects.requireNonNull(oAuth2AuthorizedClientManager.authorize(OAuth2AuthorizeRequest
                                 .withClientRegistrationId("internal-client")

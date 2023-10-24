@@ -19,7 +19,7 @@ public class OrderController {
     @Qualifier(value = "orderServiceImpl")
     private final OrderService orderService;
 
-    @PreAuthorize("hasAnyAuthority('Customer')")
+    @PreAuthorize("hasAuthority('Customer')")
     @PostMapping("/placeOrder")
     public ResponseEntity<Long> placeOrder(@RequestBody OrderRequest orderRequest) {
         Long orderId = orderService.placeOrder(orderRequest);
@@ -35,7 +35,7 @@ public class OrderController {
      * @param orderId
      * @return
      */
-    @PreAuthorize("hasAnyAuthority('Admin', 'Customer')")
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('Customer')")
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderDetails(@PathVariable("id") Long orderId) {
         OrderResponse orderResponse = orderService.getOrderDetails(orderId);
