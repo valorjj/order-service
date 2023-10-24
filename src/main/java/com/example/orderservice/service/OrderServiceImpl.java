@@ -88,12 +88,18 @@ public class OrderServiceImpl implements OrderService {
 
 
         log.info("[i] 주문번호 [{}] 에 해당하는 제품(제품번호 [{}]) 조회하기 위해서 product-service 를 호출합니다.", orderId, orderPS.getProductId());
-        ProductResponse productResponse = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(), ProductResponse.class);
+        ProductResponse productResponse
+            = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(),
+            ProductResponse.class
+        );
         log.info("[i] ProductResponse 는 다음과 같습니다 [{}]", productResponse);
 
 
         log.info("[i] 주문번호 [{}] 에 해당하는 결제내역을 조회하기 위해서 payment-service 를 호출합니다.", orderId);
-        PaymentResponse paymentResponse = restTemplate.getForObject(paymentServiceUrl + "order/" + orderPS.getId(), PaymentResponse.class);
+        PaymentResponse paymentResponse
+            = restTemplate.getForObject(paymentServiceUrl + "order/" + orderPS.getId(),
+            PaymentResponse.class
+        );
         log.info("[i] PaymentResponse 는 다음과 같습니다. [{}]", paymentResponse);
 
         assert productResponse != null;

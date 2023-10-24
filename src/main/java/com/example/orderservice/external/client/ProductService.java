@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @CircuitBreaker(name = "external", fallbackMethod = "fallback")
-@FeignClient(name = "product", url = "${microservices.product}")
+@FeignClient(name = "product-service-svc", url = "${microservices.product}")
 public interface ProductService {
 
     @PutMapping("reduceQuantity/{id}")
@@ -21,10 +21,10 @@ public interface ProductService {
         @RequestParam Long quantity
     );
 
-    @GetMapping("{id}")
-    ResponseEntity<ProductResponse> getProductById(
-        @PathVariable("id") Long productId
-    );
+//    @GetMapping("{id}")
+//    ResponseEntity<ProductResponse> getProductById(
+//        @PathVariable("id") Long productId
+//    );
 
     default ResponseEntity<Void> fallback(Exception e) {
         throw new CustomException("PRODUCT-SERVICE 가 응답하지 않습니다.", "UNAVAILABLE", 500);
