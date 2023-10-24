@@ -88,10 +88,16 @@ public class OrderServiceImpl implements OrderService {
 
 
         log.info("[i] 주문번호 [{}] 에 해당하는 제품(제품번호 [{}]) 조회하기 위해서 product-service 를 호출합니다.", orderId, orderPS.getProductId());
+//        ProductResponse productResponse
+//            = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(),
+//            ProductResponse.class
+//        );
+        
         ProductResponse productResponse
-            = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(),
+            = restTemplate.getForObject("http://product-service-svc/product/" + orderPS.getProductId(),
             ProductResponse.class
         );
+
         log.info("[i] ProductResponse 는 다음과 같습니다 [{}]", productResponse);
 
 
