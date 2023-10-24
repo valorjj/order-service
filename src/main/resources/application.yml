@@ -55,10 +55,3 @@ resilience4j:
 microservices:
   product: http://product-service-svc/product/
   payment: http://payment-service-svc/payment/
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-  paths-to-match: /**
