@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @CircuitBreaker(name = "external", fallbackMethod = "fallback")
-@FeignClient(name = "product", url = "${microservices.product}")
+@FeignClient(name = "product-service-svc")
 public interface ProductService {
 
     @PutMapping("/reduceQuantity/{id}")
