@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "product", url = "${microservices.product}")
 public interface ProductService {
 
-    @PutMapping("/reduceQuantity/{id}")
+    @PutMapping("reduceQuantity/{id}")
     ResponseEntity<Integer> reduceQuantity(
         @PathVariable("id") Long productId,
         @RequestParam Long quantity
     );
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     ResponseEntity<ProductResponse> getProductById(
         @PathVariable("id") Long productId
     );
