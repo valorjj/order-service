@@ -20,9 +20,12 @@ public class OAuth2RequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
         template.header("Authorization", "Bearer "
-            + Objects.requireNonNull(oAuth2AuthorizedClientManager.authorize(OAuth2AuthorizeRequest
-            .withClientRegistrationId("internal-client")
-            .principal("internal")
-            .build())).getAccessToken().getTokenValue());
+                + Objects.requireNonNull(oAuth2AuthorizedClientManager.authorize(OAuth2AuthorizeRequest
+                    .withClientRegistrationId("internal-client")
+                    .principal("internal")
+                    .build())
+                )
+                .getAccessToken().getTokenValue()
+        );
     }
 }

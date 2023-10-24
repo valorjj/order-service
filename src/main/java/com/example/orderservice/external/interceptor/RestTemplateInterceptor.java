@@ -22,11 +22,14 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         request.getHeaders().add("Authorization",
-                "Bearer " +
-                    Objects.requireNonNull(oAuth2AuthorizedClientManager.authorize(OAuth2AuthorizeRequest
-                                .withClientRegistrationId("internal-client")
-                                .principal("internal")
-                                .build())).getAccessToken().getTokenValue());
+            "Bearer " + Objects.requireNonNull(oAuth2AuthorizedClientManager
+                .authorize(OAuth2AuthorizeRequest
+                    .withClientRegistrationId("internal-client")
+                    .principal("internal") // okta 인증 서버에 추가로 생성한 scope 값
+                    .build()
+                )
+            ).getAccessToken().getTokenValue()
+        );
 
         return execution.execute(request, body);
     }

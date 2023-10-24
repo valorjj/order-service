@@ -19,7 +19,6 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
         http.oauth2ResourceServer(auth -> auth.jwt(withDefaults()));
-        http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 

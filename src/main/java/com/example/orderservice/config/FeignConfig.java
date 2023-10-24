@@ -6,6 +6,7 @@ import feign.codec.ErrorDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -22,6 +23,7 @@ import java.util.List;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
+@EnableFeignClients(basePackages = "com.example.orderservice")
 public class FeignConfig {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -46,11 +48,18 @@ public class FeignConfig {
         ClientRegistrationRepository clientRegistrationRepository,
         OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository
     ) {
-        OAuth2AuthorizedClientProvider oAuth2AuthorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
-            .clientCredentials().build();
-        DefaultOAuth2AuthorizedClientManager oAuth2AuthorizedClientManager = new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository,
+        OAuth2AuthorizedClientProvider oAuth2AuthorizedClientProvider
+            = OAuth2AuthorizedClientProviderBuilder
+            .builder()
+            .clientCredentials()
+            .build();
+
+        DefaultOAuth2AuthorizedClientManager oAuth2AuthorizedClientManager
+            = new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository,
             oAuth2AuthorizedClientRepository);
+
         oAuth2AuthorizedClientManager.setAuthorizedClientProvider(oAuth2AuthorizedClientProvider);
+
         return oAuth2AuthorizedClientManager;
     }
 

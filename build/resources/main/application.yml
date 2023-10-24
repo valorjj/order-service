@@ -36,6 +36,7 @@ spring:
         provider:
           okta:
             issuer-uri: https://dev-39197128.okta.com/oauth2/default
+
 resilience4j:
   circuitbreaker:
     instances:
@@ -47,7 +48,10 @@ resilience4j:
         wait-duration-in-open-state: 5s
         permitted-number-of-calls-in-half-open-state: 3
         sliding-window-size: 10
-        sliding-window-type: COUNT_BASED
+        sliding-window-type:
+
+# cloud-gateway 에 설정한 spring.cloud.gateway.routes.uri 의 값을 사용
+
 microservices:
-  product: http://product-service-svc/product/
-  payment: http://payment-service-svc/payment/
+  product: http://product-service-svc/product/ # $URL/product/ 컨트롤러로 접근
+  payment: http://payment-service-svc/payment/ # $URL/payment/ 컨트롤러로 접근
