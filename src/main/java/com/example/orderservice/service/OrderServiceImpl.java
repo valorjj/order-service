@@ -92,14 +92,15 @@ public class OrderServiceImpl implements OrderService {
 //            = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(),
 //            ProductResponse.class
 //        );
-        
-        ProductResponse productResponse
-            = restTemplate.getForObject("http://product-service-svc/product/" + orderPS.getProductId(),
-            ProductResponse.class
-        );
+
+//        ProductResponse productResponse
+//            = restTemplate.getForObject("http://product-service-svc/product/" + orderPS.getProductId(),
+//            ProductResponse.class
+//        );
+
+        ProductResponse productResponse = productService.getProductById(orderPS.getProductId()).getBody();
 
         log.info("[i] ProductResponse 는 다음과 같습니다 [{}]", productResponse);
-
 
         log.info("[i] 주문번호 [{}] 에 해당하는 결제내역을 조회하기 위해서 payment-service 를 호출합니다.", orderId);
         PaymentResponse paymentResponse
