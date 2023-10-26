@@ -19,7 +19,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
         try {
             ErrorResponse errorResponse = om.readValue(response.body().asInputStream(), ErrorResponse.class);
-            return new CustomException(errorResponse.errorMessage(), errorResponse.errorCode(), response.status());
+            return new CustomException(errorResponse.errorMessage(), response.status());
         } catch (IOException e) {
             throw new CustomException("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }

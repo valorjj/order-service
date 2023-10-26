@@ -15,7 +15,6 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.status(e.getStatus())
             .body(ErrorResponse.builder()
                 .errorMessage(e.getMessage())
-                .errorCode(e.getErrorCode())
                 .build()
             );
     }

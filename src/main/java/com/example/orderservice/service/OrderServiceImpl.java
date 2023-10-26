@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderResponse getOrderDetails(Long orderId) {
         log.info("[i] 주문번호 [{}] 에 대한 상세내역을 조회합니다.", orderId);
-        Order orderPS = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("주문번호 [" + orderId + "] 에 대한 주문내역을 찾지 못했습니다.", HttpStatus.NOT_FOUND.name(), HttpStatus.NOT_FOUND.value()));
+        Order orderPS = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("주문번호 [" + orderId + "] 에 대한 주문내역을 찾지 못했습니다.", HttpStatus.NOT_FOUND.value()));
 
         log.info("[i] 주문번호 [{}] 에 해당하는 제품(제품번호 [{}]) 조회하기 위해서 product-service 를 호출합니다.", orderId, orderPS.getProductId());
         ProductResponse productResponse
