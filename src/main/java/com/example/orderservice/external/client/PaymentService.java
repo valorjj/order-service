@@ -17,7 +17,7 @@ public interface PaymentService {
     ResponseEntity<Long> doPayment(@RequestBody PaymentRequest paymentRequest);
 
     default ResponseEntity<Long> fallback(Exception e) {
-        throw new CustomException("PAYMENT-SERVICE 가 응답하지 않습니다.", "UNAVAILABLE", 500);
+        throw new CustomException("PAYMENT-SERVICE 가 응답하지 않습니다.", 500);
     }
 
 }
