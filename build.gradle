@@ -8,7 +8,6 @@ plugins {
 	id('org.sonarqube') version '4.3.1.3277'
 }
 
-description = 'this is a cloud-gateway for microservices'
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
@@ -25,6 +24,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
@@ -39,7 +39,7 @@ sonarqube {
 		property("sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/../target/jacoco.exec")
 		// 2. 검사 시 제외할 파일을 지정한다. (공식문서에서 정보가 부족해 빈칸으로 남겨둠)
 		// property("sonar.exclusions", "")
-		
+		// 3.
 		property("sonar.java.binaries", "${buildDir}/classes")
 	}
 }
@@ -123,36 +123,36 @@ tasks.named('test') {
 
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.0'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
-	implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
-	implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
-	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
-	implementation 'io.micrometer:micrometer-tracing-bridge-brave:1.0.3'
-	implementation 'io.zipkin.reporter2:zipkin-reporter-brave:2.16.3'
-	implementation 'org.springframework.cloud:spring-cloud-starter:4.0.1'
-	implementation 'org.springframework.cloud:spring-cloud-starter-config:4.0.1'
-	implementation ('org.springframework.cloud:spring-cloud-starter-openfeign')
+	implementation ('org.springframework.boot:spring-boot-starter-actuator:3.1.0')
+	implementation ('org.springframework.boot:spring-boot-starter-data-jpa:3.0.4')
+	implementation ('org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4')
+	implementation ('org.springframework.boot:spring-boot-starter-security:3.0.4')
+	implementation ('org.springframework.boot:spring-boot-starter-web:3.1.0')
+	implementation ('com.okta.spring:okta-spring-boot-starter:3.0.5')
+	implementation ('io.micrometer:micrometer-tracing-bridge-brave:1.0.3')
+	implementation ('io.zipkin.reporter2:zipkin-reporter-brave:2.16.3')
+	implementation ('org.springframework.cloud:spring-cloud-starter:4.0.1')
+	implementation ('org.springframework.cloud:spring-cloud-starter-config:4.0.1')
+	implementation ('org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1')
 	implementation ('org.springframework.cloud:spring-cloud-starter-loadbalancer')
-	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.0.0'
-	compileOnly 'org.projectlombok:lombok:1.18.26'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4'
-	runtimeOnly 'com.h2database:h2:2.1.214'
-	runtimeOnly 'com.mysql:mysql-connector-j:8.0.32'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:3.0.4'
-	annotationProcessor 'org.projectlombok:lombok:1.18.26'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
-	testImplementation 'org.springframework.security:spring-security-test:6.0.2'
+	implementation ('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.0.0')
+	compileOnly ('org.projectlombok:lombok:1.18.26')
+	developmentOnly ('org.springframework.boot:spring-boot-devtools:3.0.4')
+	runtimeOnly ('com.h2database:h2:2.1.214')
+	runtimeOnly ('com.mysql:mysql-connector-j:8.0.32')
+	annotationProcessor ('org.springframework.boot:spring-boot-configuration-processor:3.0.4')
+	annotationProcessor ('org.projectlombok:lombok:1.18.26')
+	testImplementation ('org.springframework.boot:spring-boot-starter-test:3.1.0')
+	testImplementation ('org.springframework.security:spring-security-test:6.0.2')
 	// https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-	testImplementation 'com.github.tomakehurst:wiremock-jre8:3.0.1'
+	testImplementation ('com.github.tomakehurst:wiremock-jre8:3.0.1')
 	
 	// netty 관련 오류 해결, 애플 실리콘 맥북에서만 발생하는 걸로 추정
 	if (osdetector.arch == "aarch_64") {
 		implementation("io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64")
 	}
 	
-	runtimeOnly 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3'
+	runtimeOnly ('org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3')
 	
 	
 	// -- swagger ui --
@@ -166,6 +166,9 @@ dependencyManagement {
 	}
 }
 
+bootJar {
+	enabled = false
+}
 
 jar {
 	enabled = false

@@ -22,8 +22,7 @@ public class OrderController {
     @PreAuthorize("hasAuthority('Customer')")
     @PostMapping("/placeOrder")
     public ResponseEntity<Long> placeOrder(@RequestBody OrderRequest orderRequest) {
-        log.info("[i] 주문 컨트롤러 접근")
-        ;
+        log.info("[i] 주문 컨트롤러 접근");
         Long orderId = orderService.placeOrder(orderRequest);
         log.info("주문이 완료 되었습니다. 주문번호는 [{}] 입니다.", orderId);
 

@@ -42,8 +42,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  # cloud-gateway .yml 파일에 해당 값을 지정
-  # Eureka 의존성을 걷어내고, 쿠버네티스에서 제공하는 내부 통신을 위함
   name: order-service-svc
 spec:
   selector:
