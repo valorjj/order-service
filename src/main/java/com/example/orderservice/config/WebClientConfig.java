@@ -1,12 +1,8 @@
 package com.example.orderservice.config;
 
-import com.example.orderservice.external.decoder.CustomErrorDecoder;
-import com.example.orderservice.external.interceptor.RestTemplateInterceptor;
-import feign.codec.ErrorDecoder;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.constraints.Null;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -15,38 +11,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.web.client.RestTemplate;
-
-
-import java.util.List;
 
 @Configuration
-@Slf4j
-@RequiredArgsConstructor
-// @EnableFeignClients(basePackages = "com.example.orderservice")
-// @EnableFeignClients
-public class FeignConfig {
-
-    private final ClientRegistrationRepository clientRegistrationRepository;
-    private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
-
-    @Bean
-    ErrorDecoder errorDecoder() {
-        return new CustomErrorDecoder();
-    }
-
-    // RestTemplate 을 사용하지 않으려고하니, 아래 코드도 걷어내야 한다.
-    // HTTP Interface 에서 LoadBalance 를 어떻게 설정해야할까?
-
-
-//    @Bean
-//    @LoadBalanced
-//    public RestTemplate restTemplate() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.setInterceptors(List.of(new RestTemplateInterceptor(clientManager(clientRegistrationRepository, oAuth2AuthorizedClientRepository))));
-//        return restTemplate;
-//    }
-
+@LoadBalancerClient(name = "order-service", configuration = Null.class)
+public class WebClientConfig {
 
     @Bean
     public OAuth2AuthorizedClientManager clientManager(
@@ -67,5 +35,4 @@ public class FeignConfig {
 
         return oAuth2AuthorizedClientManager;
     }
-
 }
