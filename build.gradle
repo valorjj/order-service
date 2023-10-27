@@ -134,7 +134,7 @@ dependencies {
 	implementation ('org.springframework.cloud:spring-cloud-starter:4.0.1')
 	implementation ('org.springframework.cloud:spring-cloud-starter-config:4.0.1')
 	implementation ('org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1')
-	implementation ('org.springframework.cloud:spring-cloud-starter-loadbalancer')
+	implementation ('org.springframework.cloud:spring-cloud-starter-loadbalancer:4.0.1')
 	implementation ('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.0.0')
 	compileOnly ('org.projectlombok:lombok:1.18.26')
 	developmentOnly ('org.springframework.boot:spring-boot-devtools:3.0.4')
@@ -166,17 +166,13 @@ dependencyManagement {
 	}
 }
 
-bootJar {
-	enabled = false
-}
-
 jar {
 	enabled = false
 }
 
 jib {
 	from {
-		image = 'eclipse-temurin:17-jdk'
+		image = 'openjdk:17'
 	}
 	to {
 		image = System.getProperty('REPO_URL') + '/order-service'

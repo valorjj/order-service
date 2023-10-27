@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/order")
 public class OrderController {
 
-    @Qualifier(value = "orderServiceImpl")
+    // @Qualifier(value = "orderServiceImpl")
     private final OrderService orderService;
 
     @PreAuthorize("hasAuthority('Customer')")
