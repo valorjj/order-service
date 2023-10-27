@@ -14,6 +14,7 @@ import com.example.orderservice.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -85,11 +86,16 @@ public class OrderServiceImpl implements OrderService {
         log.info("[i] 주문번호 [{}] 에 대한 상세내역을 조회합니다.", orderId);
         Order orderPS = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("주문번호 [" + orderId + "] 에 대한 주문내역을 찾지 못했습니다.", HttpStatus.NOT_FOUND.value()));
 
+        log.info("restTemplate 문제인지 확인하기 위해서 FeignClient 으로 등록된 메서드를 직접 호출해보겠습니다.");
+
+
         log.info("[i] 주문번호 [{}] 에 해당하는 제품(제품번호 [{}]) 조회하기 위해서 product-service 를 호출합니다.", orderId, orderPS.getProductId());
-        ProductResponse productResponse
-            = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(),
-            ProductResponse.class
-        );
+//        ProductResponse productResponse
+//            = restTemplate.getForObject(productServiceUrl + orderPS.getProductId(),
+//            ProductResponse.class
+//        );
+
+        ProductResponse productResponse = productService.getProductById(orderPS.getProductId()).getBody();
 
         log.info("[i] ProductResponse 는 다음과 같습니다 [{}]", productResponse);
 

@@ -22,10 +22,10 @@ public interface ProductService {
         @RequestParam Long quantity
     );
 
-//    @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<ProductResponse> getProductById(
-//        @PathVariable("id") Long productId
-//    );
+    @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ProductResponse> getProductById(
+        @PathVariable("id") Long productId
+    );
 
     default ResponseEntity<Void> fallback(Exception e) {
         throw new CustomException("PRODUCT-SERVICE 가 응답하지 않습니다.", 500);
