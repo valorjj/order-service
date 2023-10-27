@@ -23,7 +23,8 @@ import java.util.List;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-@EnableFeignClients(basePackages = "com.example.orderservice")
+// @EnableFeignClients(basePackages = "com.example.orderservice")
+@EnableFeignClients
 public class FeignConfig {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
