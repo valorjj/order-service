@@ -25,7 +25,7 @@ public interface PaymentService {
     );
 
     default ResponseEntity<Long> fallback(Exception e) {
-        throw new CustomException("PAYMENT-SERVICE 가 응답하지 않습니다.", 500);
+        throw new CustomException("payment-service-svc 가 응답하지 않습니다.", 500, e.getLocalizedMessage());
     }
 
 }

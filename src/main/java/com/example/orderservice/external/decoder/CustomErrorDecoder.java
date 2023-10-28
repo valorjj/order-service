@@ -19,9 +19,9 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
         try {
             ErrorResponse errorResponse = om.readValue(response.body().asInputStream(), ErrorResponse.class);
-            return new CustomException(errorResponse.errorMessage(), response.status());
+            return new CustomException("Service 간 통신에 에러가 발생했습니다.", response.status(), errorResponse.errorMessage());
         } catch (IOException e) {
-            throw new CustomException("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            throw new CustomException("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getLocalizedMessage());
         }
     }
 }

@@ -29,7 +29,7 @@ public interface ProductService {
     );
 
     default ResponseEntity<Void> fallback(Exception e) {
-        throw new CustomException("PRODUCT-SERVICE 가 응답하지 않습니다.", 500);
+        throw new CustomException("product-service-svc 가 응답하지 않습니다.", 500, e.getMessage());
     }
 
 }

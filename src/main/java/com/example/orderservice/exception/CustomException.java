@@ -1,9 +1,7 @@
 package com.example.orderservice.exception;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * {@code @EqualsAndHashCode(callSuper = true)} 는 equals, hascode 메서드를 자동으로 생성해준다.
@@ -16,10 +14,13 @@ import lombok.EqualsAndHashCode;
 public class CustomException extends RuntimeException {
 
     private final Integer status;
+    private final String errorMessage;
 
-    public CustomException(String message, Integer status) {
+    public CustomException(String message, Integer status, String errorMessage) {
         super(message);
         this.status = status;
+        this.errorMessage = errorMessage;
     }
+
 
 }

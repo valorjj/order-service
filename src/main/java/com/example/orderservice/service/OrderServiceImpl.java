@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse getOrderDetails(Long orderId) {
-        Order orderPS = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("주문번호 [" + orderId + "] 에 대한 주문내역을 찾지 못했습니다.", HttpStatus.NOT_FOUND.value()));
+        Order orderPS = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("주문번호 [" + orderId + "] 에 대한 주문내역을 찾지 못했습니다.", HttpStatus.NOT_FOUND.value(), "Error"));
 
         log.info("[i] product-service-svc 를 호출합니다.");
         ProductResponse productResponse = productService.getProductById(orderPS.getProductId()).getBody();
