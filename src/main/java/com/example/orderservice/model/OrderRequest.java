@@ -13,10 +13,8 @@ public record OrderRequest(
     Long totalAmount,
     Long quantity,
     PaymentMode paymentMode
-
 ) {
-
-    public static Order of(OrderRequest orderRequest) {
+    public static Order fromRecordToEntity(OrderRequest orderRequest) {
         return Order.builder()
             .productId(orderRequest.productId())
             .orderStatus(OrderStatus.PLACED)

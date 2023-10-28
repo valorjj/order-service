@@ -1,6 +1,7 @@
 package com.example.orderservice.external.client;
 
 
+import com.example.orderservice.config.FeignConfig;
 import com.example.orderservice.exception.CustomException;
 import com.example.orderservice.external.model.ProductResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @CircuitBreaker(name = "external", fallbackMethod = "fallback")
-@FeignClient(name = "product", url = "${microservices.product}", dismiss404 = false)
+@FeignClient(name = "product", url = "http://product-service-svc/product")
 public interface ProductService {
 
     @PutMapping(value = "/reduceQuantity/{id}")
@@ -22,7 +23,7 @@ public interface ProductService {
         @RequestParam Long quantity
     );
 
-    @GetMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ProductResponse> getProductById(
         @PathVariable("id") Long productId
     );
@@ -30,6 +31,5 @@ public interface ProductService {
     default ResponseEntity<Void> fallback(Exception e) {
         throw new CustomException("PRODUCT-SERVICE 가 응답하지 않습니다.", 500);
     }
-
 
 }

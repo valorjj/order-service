@@ -7,17 +7,13 @@ import com.example.orderservice.external.client.ProductService;
 import com.example.orderservice.external.model.PaymentRequest;
 import com.example.orderservice.external.model.PaymentResponse;
 import com.example.orderservice.external.model.ProductResponse;
-import com.example.orderservice.http_interface.PaymentClient;
-import com.example.orderservice.http_interface.ProductClient;
 import com.example.orderservice.model.OrderRequest;
 import com.example.orderservice.model.OrderResponse;
 import com.example.orderservice.model.OrderStatus;
 import com.example.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -31,28 +27,20 @@ import static com.example.orderservice.model.OrderStatus.REJECTED;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductClient productClient;
-    private final PaymentClient paymentClient;
+    private final ProductService productService;
+    private final PaymentService paymentService;
     private final RestTemplate restTemplate;
-
-    @Value(value = "${microservices.product}")
-    private String productServiceUrl;
-
-    @Value(value = "${microservices.payment}")
-    private String paymentServiceUrl;
 
     @Override
     @Transactional
     public Long placeOrder(OrderRequest orderRequest) {
-        log.info("[i] 주문내역 저장을 시작합니다.");
-        log.info("[i] 제품 재고를 업데이트하기 위해서 product-service 를 호출합니다.");
-        productClient.reduceQuantity(orderRequest.productId(), orderRequest.quantity());
+        log.info("[i] product-service-svc 를 호출하여 제품의 수량을 감소시킵니다.");
+        productService.reduceQuantity(orderRequest.productId(), orderRequest.quantity());
 
         // record 를 entity 로 변환합니다.
-        Order order = OrderRequest.of(orderRequest);
+        Order order = OrderRequest.fromRecordToEntity(orderRequest);
         // entity 를 1차 캐시에 저장합니다.
         Order orderPS = orderRepository.save(order);
-        log.info("[i] 주문내역이 성공적으로 저장되었습니다.");
 
         PaymentRequest paymentRequest = PaymentRequest.builder()
             .orderId(orderPS.getId())
@@ -63,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
         OrderStatus orderStatus = null;
 
         try {
-            log.info("[i] 결제를 진행하기 위해 Payment-Service 를 호출합니다.");
-            paymentClient.doPayment(paymentRequest);
+            log.info("[i] 결제를 진행하기 위해 payment-service-svc 를 호출합니다.");
+            paymentService.doPayment(paymentRequest);
             orderStatus = PLACED;
         } catch (Exception e) {
             log.error("결제 과정중 문제가 발생했습니다.");
@@ -80,19 +68,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse getOrderDetails(Long orderId) {
-        log.info("[i] 주문번호 [{}] 에 대한 상세내역을 조회합니다.", orderId);
         Order orderPS = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("주문번호 [" + orderId + "] 에 대한 주문내역을 찾지 못했습니다.", HttpStatus.NOT_FOUND.value()));
 
-        log.info("[i] HTTP Interface 를 이용하여 product-service-svc 를 호출합니다.");
-        ProductResponse productResponse = productClient.productById(orderPS.getProductId());
-
-
-        log.info("[i] 주문번호 [{}] 에 해당하는 결제내역을 조회하기 위해서 payment-service 를 호출합니다.", orderId);
-        PaymentResponse paymentResponse
-            = restTemplate.getForObject(paymentServiceUrl + "order/" + orderPS.getId(),
-            PaymentResponse.class
-        );
-        log.info("[i] PaymentResponse 는 다음과 같습니다. [{}]", paymentResponse);
+        log.info("[i] product-service-svc 를 호출합니다.");
+        ProductResponse productResponse = productService.getProductById(orderPS.getProductId()).getBody();
 
         assert productResponse != null;
         OrderResponse.ProductDetails productDetails = OrderResponse.ProductDetails
@@ -102,7 +81,10 @@ public class OrderServiceImpl implements OrderService {
             .price(productResponse.price())
             .quantity(productResponse.quantity())
             .build();
-        log.info("[i] OrderResponse.ProductDetails 는 다음과 같습니다. := [{}]", productDetails);
+
+
+        log.info("[i] payment-service 를 호출합니다.");
+        PaymentResponse paymentResponse = paymentService.getPaymentDetailsByOrderId(orderPS.getId()).getBody();
 
         assert paymentResponse != null;
         OrderResponse.PaymentDetails paymentDetails = OrderResponse.PaymentDetails
@@ -112,18 +94,6 @@ public class OrderServiceImpl implements OrderService {
             .paymentDate(paymentResponse.paymentDate())
             .paymentMode(paymentResponse.paymentMode())
             .build();
-
-        log.info("[i] OrderResponse.PaymentDetails 는 다음과 같습니다. := [{}]", paymentDetails);
-
-        OrderResponse orderResponse = OrderResponse.builder()
-            .orderId(orderPS.getId())
-            .orderStatus(orderPS.getOrderStatus().name())
-            .amount(orderPS.getAmount())
-            .orderDate(orderPS.getCreatedDate())
-            .paymentDetails(paymentDetails)
-            .productDetails(productDetails)
-            .build();
-        log.info("[i] OrderResponse 는 다음과 같습니다. := [{}]", orderResponse);
 
         return OrderResponse.builder()
             .orderId(orderPS.getId())

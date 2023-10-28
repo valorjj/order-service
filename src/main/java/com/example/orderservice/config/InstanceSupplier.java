@@ -29,9 +29,10 @@
 //
 //    @Override
 //    public Flux<List<ServiceInstance>> get() {
-//        ServiceInstance
-//        return Flux.just(Arrays.asList(new DefaultServiceInstance("", "", "", 8080, false),
-//            new DefaultServiceInstance("", "", "", 8081, false)
+//        return Flux.just(
+//            Arrays.asList(
+//                new DefaultServiceInstance("", "", "", 8080, false),
+//                new DefaultServiceInstance("", "", "", 8081, false)
 //            ));
 //    }
 //}

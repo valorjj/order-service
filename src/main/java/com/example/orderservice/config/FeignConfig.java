@@ -23,8 +23,7 @@ import java.util.List;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-// @EnableFeignClients(basePackages = "com.example.orderservice")
-// @EnableFeignClients
+@EnableFeignClients(basePackages = {"com.example.orderservice"})
 public class FeignConfig {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -35,18 +34,13 @@ public class FeignConfig {
         return new CustomErrorDecoder();
     }
 
-    // RestTemplate 을 사용하지 않으려고하니, 아래 코드도 걷어내야 한다.
-    // HTTP Interface 에서 LoadBalance 를 어떻게 설정해야할까?
-
-
-//    @Bean
-//    @LoadBalanced
-//    public RestTemplate restTemplate() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.setInterceptors(List.of(new RestTemplateInterceptor(clientManager(clientRegistrationRepository, oAuth2AuthorizedClientRepository))));
-//        return restTemplate;
-//    }
-
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setInterceptors(List.of(new RestTemplateInterceptor(clientManager(clientRegistrationRepository, oAuth2AuthorizedClientRepository))));
+        return restTemplate;
+    }
 
     @Bean
     public OAuth2AuthorizedClientManager clientManager(
